@@ -1,0 +1,253 @@
+:root {
+	--fondo: #f3f5f9;
+	--tarjeta: #ffffff;
+	--texto: #1f2937;
+	--suave: #6b7280;
+	--borde: #d8dde6;
+	--primario: #1e4f91;
+	--primario-hover: #163d72;
+	--exito: #15803d;
+	--peligro: #b91c1c;
+	--radio: 10px;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+	background: var(--fondo);
+	color: var(--texto);
+}
+
+.encabezado {
+	background: linear-gradient(135deg, var(--primario), #2f6fc4);
+	color: #fff;
+	padding: 28px 16px;
+	text-align: center;
+}
+
+.encabezado h1 {
+	margin: 0 0 6px;
+	font-size: 1.8rem;
+}
+
+.encabezado p {
+	margin: 0;
+	opacity: 0.9;
+}
+
+.contenedor {
+	max-width: 1100px;
+	margin: 24px auto;
+	padding: 0 16px;
+}
+
+.columnas {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 20px;
+	margin-bottom: 20px;
+}
+
+.tarjeta {
+	background: var(--tarjeta);
+	border: 1px solid var(--borde);
+	border-radius: var(--radio);
+	padding: 22px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.tarjeta h2 {
+	margin: 0 0 18px;
+	font-size: 1.2rem;
+	color: var(--primario);
+	border-bottom: 2px solid var(--fondo);
+	padding-bottom: 10px;
+}
+
+/* ---------- Formulario ---------- */
+.campo {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 14px;
+	flex: 1;
+}
+
+.fila {
+	display: flex;
+	gap: 14px;
+}
+
+.campo label {
+	font-weight: 600;
+	font-size: 0.9rem;
+	margin-bottom: 5px;
+}
+
+.campo input,
+.campo select {
+	padding: 10px 12px;
+	border: 1px solid var(--borde);
+	border-radius: 6px;
+	font-size: 0.95rem;
+	background: #fff;
+}
+
+.campo input:focus,
+.campo select:focus {
+	outline: none;
+	border-color: var(--primario);
+	box-shadow: 0 0 0 3px rgba(30, 79, 145, 0.15);
+}
+
+.error {
+	color: var(--peligro);
+	font-size: 0.8rem;
+	margin-top: 4px;
+}
+
+.mensajes-globales {
+	list-style: none;
+	padding: 12px 16px;
+	margin: 0 0 16px;
+	background: #fee2e2;
+	color: var(--peligro);
+	border-radius: 6px;
+}
+
+.mensajes-globales:empty {
+	display: none;
+}
+
+.botones {
+	display: flex;
+	gap: 10px;
+	margin-top: 8px;
+}
+
+.btn {
+	flex: 1;
+	padding: 11px;
+	border-radius: 6px;
+	font-size: 1rem;
+	font-weight: 600;
+	cursor: pointer;
+	border: 1px solid var(--primario);
+}
+
+.btn-primario {
+	background: var(--primario);
+	color: #fff;
+}
+
+.btn-primario:hover {
+	background: var(--primario-hover);
+}
+
+.btn-secundario {
+	background: #fff;
+	color: var(--primario);
+}
+
+.btn-secundario:hover {
+	background: var(--fondo);
+}
+
+/* ---------- Resultado ---------- */
+.vacio {
+	color: var(--suave);
+	text-align: center;
+	padding: 60px 10px;
+	border: 2px dashed var(--borde);
+	border-radius: var(--radio);
+}
+
+.datos {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 6px 16px;
+	margin: 0 0 18px;
+}
+
+.datos dt {
+	color: var(--suave);
+	font-size: 0.9rem;
+}
+
+.datos dd {
+	margin: 0;
+	font-weight: 600;
+}
+
+.liquidacion {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.liquidacion td {
+	padding: 10px 4px;
+	border-top: 1px solid var(--borde);
+}
+
+.liquidacion .valor {
+	text-align: right;
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+}
+
+.suma {
+	color: var(--exito);
+}
+
+.resta {
+	color: var(--peligro);
+}
+
+.nota {
+	display: block;
+	font-size: 0.78rem;
+	color: var(--suave);
+}
+
+.liquidacion .total td {
+	font-size: 1.15rem;
+	font-weight: 700;
+	border-top: 2px solid var(--texto);
+	color: var(--primario);
+}
+
+/* ---------- Historial ---------- */
+.tabla-scroll {
+	overflow-x: auto;
+}
+
+.historial {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.92rem;
+}
+
+.historial th {
+	text-align: left;
+	background: var(--fondo);
+	padding: 10px;
+}
+
+.historial td {
+	padding: 10px;
+	border-top: 1px solid var(--borde);
+}
+
+@media (max-width: 760px) {
+	.columnas {
+		grid-template-columns: 1fr;
+	}
+
+	.fila {
+		flex-direction: column;
+		gap: 0;
+	}
+}

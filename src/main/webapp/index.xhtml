@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:a="jakarta.faces.passthrough">
+<h:head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Liquidación de Nómina</title>
+    <h:outputStylesheet library="css" name="estilos.css" />
+</h:head>
+<h:body>
+    <header class="encabezado">
+        <h1>Liquidación de Nómina</h1>
+        <p>Ingrese los datos del empleado para calcular el pago del periodo.</p>
+    </header>
+
+    <h:form id="frm" styleClass="contenedor">
+        <h:messages globalOnly="true" styleClass="mensajes-globales" />
+
+        <div class="columnas">
+            <section class="tarjeta">
+                <h2>Datos del empleado</h2>
+
+                <div class="campo">
+                    <h:outputLabel for="nombres" value="Nombres *" />
+                    <h:inputText id="nombres" value="#{nominaBean.empleado.nombres}"
+                                 required="true" requiredMessage="Los nombres son obligatorios."
+                                 a:placeholder="Ej. Juan Carlos">
+                        <f:validateLength minimum="2" maximum="60" />
+                    </h:inputText>
+                    <h:message for="nombres" styleClass="error" />
+                </div>
+
+                <div class="campo">
+                    <h:outputLabel for="apellidos" value="Apellidos *" />
+                    <h:inputText id="apellidos" value="#{nominaBean.empleado.apellidos}"
+                                 required="true" requiredMessage="Los apellidos son obligatorios."
+                                 a:placeholder="Ej. Pérez Gómez">
+                        <f:validateLength minimum="2" maximum="60" />
+                    </h:inputText>
+                    <h:message for="apellidos" styleClass="error" />
+                </div>
+
+                <div class="campo">
+                    <h:outputLabel for="identificacion" value="Identificación *" />
+                    <h:inputText id="identificacion" value="#{nominaBean.empleado.identificacion}"
+                                 required="true" requiredMessage="La identificación es obligatoria."
+                                 validatorMessage="La identificación debe tener solo números (5 a 12 dígitos)."
+                                 a:placeholder="Ej. 1020304050" a:inputmode="numeric">
+                        <f:validateRegex pattern="\d{5,12}" />
+                    </h:inputText>
+                    <h:message for="identificacion" styleClass="error" />
+                </div>
+
+                <div class="campo">
+                    <h:outputLabel for="cargo" value="Cargo *" />
+                    <h:inputText id="cargo" value="#{nominaBean.empleado.cargo}"
+                                 required="true" requiredMessage="El cargo es obligatorio."
+                                 a:placeholder="Ej. Auxiliar contable" />
+                    <h:message for="cargo" styleClass="error" />
+                </div>
+
+                <div class="fila">
+                    <div class="campo">
+                        <h:outputLabel for="salario" value="Salario básico *" />
+                        <h:selectOneMenu id="salario" value="#{nominaBean.empleado.salarioBasico}"
+                                         required="true" requiredMessage="Seleccione el salario básico.">
+                            <f:selectItem itemLabel="Seleccione..." itemValue="#{null}" noSelectionOption="true" />
+                            <f:selectItems value="#{nominaBean.opcionesSalario}" />
+                        </h:selectOneMenu>
+                        <h:message for="salario" styleClass="error" />
+                    </div>
+
+                    <div class="campo">
+                        <h:outputLabel for="dias" value="Días trabajados *" />
+                        <h:inputText id="dias" value="#{nominaBean.empleado.diasTrabajados}"
+                                     required="true" requiredMessage="Los días trabajados son obligatorios."
+                                     converterMessage="Los días deben ser un número entero."
+                                     validatorMessage="Los días deben estar entre 1 y 30."
+                                     a:type="number" a:min="1" a:max="30" a:placeholder="1 - 30">
+                            <f:validateLongRange minimum="1" maximum="30" />
+                        </h:inputText>
+                        <h:message for="dias" styleClass="error" />
+                    </div>
+                </div>
+
+                <div class="botones">
+                    <h:commandButton value="Calcular" action="#{nominaBean.calcular}" styleClass="btn btn-primario" />
+
+                    <!-- immediate se salta la validación, si no los campos no dejarían limpiar, con resetValues borra lo que quedó escrito en los inputs. -->
+                    <h:commandButton value="Limpiar" action="#{nominaBean.limpiar}" immediate="true"
+                                     styleClass="btn btn-secundario">
+                        <f:ajax render="@form" resetValues="true" />
+                    </h:commandButton>
+                </div>
+            </section>
+
+            <section class="tarjeta resultado">
+                <h2>Resultado</h2>
+
+                <h:panelGroup layout="block" styleClass="vacio" rendered="#{nominaBean.nomina == null}">
+                    Complete el formulario y presione <strong>Calcular</strong>.
+                </h:panelGroup>
+
+                <h:panelGroup layout="block" rendered="#{nominaBean.nomina != null}">
+                    <dl class="datos">
+                        <dt>Empleado</dt>
+                        <dd>#{nominaBean.nomina.empleado.nombreCompleto}</dd>
+                        <dt>Identificación</dt>
+                        <dd>#{nominaBean.nomina.empleado.identificacion}</dd>
+                        <dt>Cargo</dt>
+                        <dd>#{nominaBean.nomina.empleado.cargo}</dd>
+                        <dt>Salario básico</dt>
+                        <dd>
+                            <h:outputText value="#{nominaBean.nomina.empleado.salarioBasico}">
+                                <f:convertNumber type="currency" currencySymbol="$" locale="es_CO" maxFractionDigits="0" />
+                            </h:outputText>
+                        </dd>
+                        <dt>Días trabajados</dt>
+                        <dd>#{nominaBean.nomina.empleado.diasTrabajados}</dd>
+                    </dl>
+
+                    <table class="liquidacion">
+                        <tr>
+                            <td>Salario devengado</td>
+                            <td class="valor">
+                                <h:outputText value="#{nominaBean.nomina.salario}">
+                                    <f:convertNumber type="currency" currencySymbol="$" locale="es_CO" maxFractionDigits="0" />
+                                </h:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Auxilio de transporte
+                                <h:outputText value=" (no aplica: básico mayor a 2 SMMLV)" styleClass="nota"
+                                              rendered="#{not nominaBean.nomina.tieneAuxilio}" />
+                            </td>
+                            <td class="valor suma">
+                                <h:outputText value="#{nominaBean.nomina.auxilioTransporte}">
+                                    <f:convertNumber type="currency" currencySymbol="$" locale="es_CO" maxFractionDigits="0" />
+                                </h:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Descuento salud (4%)</td>
+                            <td class="valor resta">
+                                -<h:outputText value="#{nominaBean.nomina.salud}">
+                                    <f:convertNumber type="currency" currencySymbol="$" locale="es_CO" maxFractionDigits="0" />
+                                </h:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Descuento pensión (4%)</td>
+                            <td class="valor resta">
+                                -<h:outputText value="#{nominaBean.nomina.pension}">
+                                    <f:convertNumber type="currency" currencySymbol="$" locale="es_CO" maxFractionDigits="0" />
+                                </h:outputText>
+                            </td>
+                        </tr>
+                        <tr class="total">
+                            <td>Neto a pagar</td>
+                            <td class="valor">
+                                <h:outputText value="#{nominaBean.nomina.netoPagar}">
+                                    <f:convertNumber type="currency" currencySymbol="$" locale="es_CO" maxFractionDigits="0" />
+                                </h:outputText>
+                            </td>
+                        </tr>
+                    </table>
+                </h:panelGroup>
+            </section>
+        </div>
+
+        <h:panelGroup layout="block" styleClass="tarjeta" rendered="#{not empty nominaBean.historial}">
+            <h2>Nóminas calculadas</h2>
+            <div class="tabla-scroll">
+                <h:dataTable value="#{nominaBean.historial}" var="n" styleClass="historial">
+                    <h:column>
+                        <f:facet name="header">Fecha</f:facet>
+                        <h:outputText value="#{n.fechaCalculo}">
+                            <f:convertDateTime type="localDateTime" pattern="dd/MM/yyyy HH:mm" />
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Identificación</f:facet>
+                        #{n.empleado.identificacion}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Empleado</f:facet>
+                        #{n.empleado.nombreCompleto}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Días</f:facet>
+                        #{n.empleado.diasTrabajados}
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Neto a pagar</f:facet>
+                        <h:outputText value="#{n.netoPagar}">
+                            <f:convertNumber type="currency" currencySymbol="$" locale="es_CO" maxFractionDigits="0" />
+                        </h:outputText>
+                    </h:column>
+                </h:dataTable>
+            </div>
+        </h:panelGroup>
+    </h:form>
+</h:body>
+</html>
